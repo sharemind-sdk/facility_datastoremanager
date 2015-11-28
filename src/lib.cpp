@@ -24,8 +24,6 @@
 #include <sharemind/compiler-support/GccPR54526.h>
 #include <sharemind/libfmodapi/api_0x1.h>
 
-#define SharemindProcess_Id 0
-
 extern "C" {
 
 SHAREMIND_FACILITY_MODULE_API_MODULE_INFO("DataStoreManager", 1u, 1u);
@@ -37,11 +35,6 @@ SHAREMIND_FACILITY_MODULE_API_0x1_INITIALIZER(c,errorStr) {
     try {
         ::sharemind::DataStoreManager * const manager =
             new ::sharemind::DataStoreManager{};
-
-        ::sharemind::DataStoreFactory * const factory =
-            new ::sharemind::DataStoreFactory{};
-
-        manager->registerFactory(SharemindProcess_Id, *factory);
 
         ::SharemindModuleApi0x1Facility * const facility =
             new SharemindModuleApi0x1Facility{&manager->wrapper(), nullptr};
@@ -72,15 +65,68 @@ SHAREMIND_FACILITY_MODULE_API_0x1_DEINITIALIZER(c) {
         static_cast<
             SHAREMIND_GCCPR54526_WORKAROUND::sharemind::DataStoreManager *>(
                 managerWrapper->internal);
-    ::SharemindDataStoreFactory * const factoryWrapper =
-        manager->factoryWrapper(SharemindProcess_Id);
-    assert(factoryWrapper->internal);
-    manager->unregisterFactory(SharemindProcess_Id);
-    delete static_cast<
-        SHAREMIND_GCCPR54526_WORKAROUND::sharemind::DataStoreFactory *>(
-            factoryWrapper->internal);
     delete manager;
     delete facility;
+}
+
+SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c, errorStr);
+SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c, errorStr) {
+    (void) errorStr;
+    assert (c);
+    assert (c->moduleHandle);
+
+    try {
+        ::SharemindModuleApi0x1Facility * const facility =
+            static_cast<
+                SHAREMIND_GCCPR54526_WORKAROUND::SharemindModuleApi0x1Facility *>(
+                    c->moduleHandle);
+        ::SharemindDataStoreManager * const managerWrapper =
+            static_cast<
+                SHAREMIND_GCCPR54526_WORKAROUND::SharemindDataStoreManager *>(
+                facility->facility);
+        assert(managerWrapper->internal);
+        ::sharemind::DataStoreManager * const manager =
+            static_cast<
+                SHAREMIND_GCCPR54526_WORKAROUND::sharemind::DataStoreManager *>(
+                    managerWrapper->internal);
+        ::sharemind::DataStoreFactory * const factory =
+            new ::sharemind::DataStoreFactory{};
+
+        manager->registerFactory(c->processId, *factory);
+
+        c->processHandle = factory;
+
+        return SHAREMIND_FACILITY_MODULE_API_0x1_OK;
+    } catch (const std::bad_alloc &) {
+        return SHAREMIND_FACILITY_MODULE_API_0x1_OUT_OF_MEMORY;
+    } catch (...) {
+        return SHAREMIND_FACILITY_MODULE_API_0x1_MODULE_ERROR;
+    }
+}
+
+SHAREMIND_FACILITY_MODULE_API_0x1_PI_SHUTDOWN(c);
+SHAREMIND_FACILITY_MODULE_API_0x1_PI_SHUTDOWN(c) {
+    assert(c);
+    assert(c->moduleHandle);
+    ::SharemindModuleApi0x1Facility * const facility =
+        static_cast<
+            SHAREMIND_GCCPR54526_WORKAROUND::SharemindModuleApi0x1Facility *>(
+                c->moduleHandle);
+    assert(facility->facility);
+    ::SharemindDataStoreManager * const managerWrapper =
+        static_cast<
+            SHAREMIND_GCCPR54526_WORKAROUND::SharemindDataStoreManager *>(
+            facility->facility);
+    assert(managerWrapper->internal);
+    ::sharemind::DataStoreManager * const manager =
+        static_cast<
+            SHAREMIND_GCCPR54526_WORKAROUND::sharemind::DataStoreManager *>(
+                managerWrapper->internal);
+    ::sharemind::DataStoreFactory * const factory =
+        static_cast<SHAREMIND_GCCPR54526_WORKAROUND::sharemind::DataStoreFactory *>(
+                c->processHandle);
+    manager->unregisterFactory(c->processId);
+    delete factory;
 }
 
 #define FIND_FACILITY(NAME) \
