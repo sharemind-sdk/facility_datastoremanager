@@ -40,7 +40,7 @@ SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c, errorStr);
 SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c,) {
     assert(c);
 
-    static constexpr auto const setProcessFailure =
+    static constexpr auto setProcessFailure =
             SHAREMIND_FACILITY_MODULE_API_0x1_USER_SET_PROCESS_FACILITY_FAILURE;
     try {
         auto const factory = new ::sharemind::DataStoreFactory();
