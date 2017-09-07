@@ -21,7 +21,7 @@
 #include <cstring>
 #include <new>
 #include <sharemind/DataStoreFactory.h>
-#include <sharemind/libfmodapi/api_0x1.h>
+#include <sharemind/facility-module-apis/api_0x1.h>
 
 
 extern "C" {

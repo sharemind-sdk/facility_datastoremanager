@@ -29,8 +29,8 @@ SharemindSetProjectVersion()
 
 
 FIND_PACKAGE(SharemindCxxHeaders REQUIRED)
+FIND_PACKAGE(SharemindFacilityModuleApis REQUIRED)
 FIND_PACKAGE(SharemindLibDataStoreManager REQUIRED)
-FIND_PACKAGE(SharemindLibFModapi 0.1.0 REQUIRED)
 
 
 # The facility:
@@ -48,14 +48,13 @@ SharemindAddSharedLibrary("sharemind_facility_datastoremanager"
     INCLUDE_DIRECTORIES
         ${SharemindCxxHeaders_INCLUDE_DIRS}
         ${SharemindLibDataStoreManager_INCLUDE_DIRS}
-        ${SharemindLibFModapi_INCLUDE_DIRS}
+        ${SharemindFacilityModuleApis_INCLUDE_DIRS}
     COMPILE_DEFINITIONS
         "_XOPEN_SOURCE=700"
         "SHAREMIND_INTERNAL_"
     LEGACY_DEFINITIONS
         ${SharemindCxxHeaders_DEFINITIONS}
         ${SharemindLibDataStoreManager_DEFINITIONS}
-        ${SharemindLibFModapi_DEFINITIONS}
     LINK_LIBRARIES
         ${LogHard_LIBRARIES}
         ${SharemindLibDataStoreManager_LIBRARIES}
