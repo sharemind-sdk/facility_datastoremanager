@@ -45,7 +45,7 @@ SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c,) {
     try {
         auto const factory = new ::sharemind::DataStoreFactory();
         c->processHandle = factory;
-        if (!c->setProcessFacility(c, "DataStoreFactory", factory))
+        if (!c->setProcessFacility(c, "DataStoreFactory", &factory->wrapper()))
             return setProcessFailure;
         return SHAREMIND_FACILITY_MODULE_API_0x1_OK;
     } catch (const std::bad_alloc &) {
@@ -58,8 +58,7 @@ SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c,) {
 SHAREMIND_FACILITY_MODULE_API_0x1_PI_SHUTDOWN(processHandle);
 SHAREMIND_FACILITY_MODULE_API_0x1_PI_SHUTDOWN(processHandle) {
     assert(processHandle);
-    using Factory = ::sharemind::DataStoreFactory;
-    delete static_cast<Factory *>(processHandle);
+    delete static_cast<::sharemind::DataStoreFactory *>(processHandle);
 }
 
 } // extern "C" {
