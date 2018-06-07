@@ -18,7 +18,7 @@
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
-PROJECT(SharemindFacilityDataStoreManager VERSION 0.1.0 LANGUAGES CXX)
+PROJECT(SharemindFacilityDataStoreManager VERSION 0.2.0 LANGUAGES CXX)
 
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/config.local" OPTIONAL)
 INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
@@ -28,9 +28,8 @@ FIND_PACKAGE(SharemindCMakeHelpers REQUIRED)
 SharemindSetProjectVersion()
 
 
-FIND_PACKAGE(SharemindCxxHeaders REQUIRED)
-FIND_PACKAGE(SharemindFacilityModuleApis REQUIRED)
-FIND_PACKAGE(SharemindLibDataStoreManager REQUIRED)
+FIND_PACKAGE(SharemindFacilityModuleApis 2.0.0 REQUIRED)
+FIND_PACKAGE(SharemindLibDataStoreManager 0.1.0 REQUIRED)
 
 
 # The facility:
@@ -46,16 +45,16 @@ SharemindAddSharedLibrary("sharemind_facility_datastoremanager"
         ${SharemindFacilityDataStoreManager_SOURCES}
         ${SharemindFacilityDataStoreManager_HEADERS}
     INCLUDE_DIRECTORIES
-        ${SharemindCxxHeaders_INCLUDE_DIRS}
         ${SharemindLibDataStoreManager_INCLUDE_DIRS}
         ${SharemindFacilityModuleApis_INCLUDE_DIRS}
     COMPILE_DEFINITIONS
         "_XOPEN_SOURCE=700"
         "SHAREMIND_INTERNAL_"
     LEGACY_DEFINITIONS
-        ${SharemindCxxHeaders_DEFINITIONS}
+        ${SharemindFacilityModuleApis_DEFINITIONS}
         ${SharemindLibDataStoreManager_DEFINITIONS}
     LINK_LIBRARIES
+        ${SharemindFacilityModuleApis_LIBRARIES}
         ${SharemindLibDataStoreManager_LIBRARIES}
 )
 

@@ -17,48 +17,44 @@
  * For further information, please contact us at sharemind@cyber.ee.
  */
 
-#include <cassert>
-#include <cstring>
-#include <new>
+#include <memory>
 #include <sharemind/DataStoreFactory.h>
-#include <sharemind/facility-module-apis/api_0x1.h>
+#include <sharemind/facility-module-apis/api.h>
+#include <sharemind/facility-module-apis/api_0x2.h>
+#include <utility>
 
+
+namespace {
+
+namespace V2 = sharemind::FacilityModuleApis::v2;
+
+struct DataStoreFactoryProcessFacilityFactory final
+        : V2::ProcessFacilityFactory
+{
+
+    V2::FacilitySharedPtr createFacility(
+            V2::ProcessFacilityFactoryContext const &) final override
+    {
+        auto factory(std::make_shared<::sharemind::DataStoreFactory>());
+        return std::shared_ptr<::SharemindDataStoreFactory>(
+                    std::move(factory),
+                    &factory->wrapper());
+    }
+
+};
+
+void initializeModule(V2::ModuleInitContext & context) {
+    context.registerProcessFacilityFactory(
+                "DataStoreFactory",
+                std::make_shared<DataStoreFactoryProcessFacilityFactory>());
+}
+
+} // anonymous namespace
 
 extern "C" {
 
-SHAREMIND_FACILITY_MODULE_API_MODULE_INFO("DataStoreManager", 1u, 1u);
-
-SHAREMIND_FACILITY_MODULE_API_0x1_INITIALIZER(c,errorStr);
-SHAREMIND_FACILITY_MODULE_API_0x1_INITIALIZER(,) {
-    return ::SHAREMIND_FACILITY_MODULE_API_0x1_OK;
-}
-
-SHAREMIND_FACILITY_MODULE_API_0x1_DEINITIALIZER(c);
-SHAREMIND_FACILITY_MODULE_API_0x1_DEINITIALIZER() {}
-
-SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c, errorStr);
-SHAREMIND_FACILITY_MODULE_API_0x1_PI_STARTUP(c,) {
-    assert(c);
-
-    static constexpr auto setProcessFailure =
-            SHAREMIND_FACILITY_MODULE_API_0x1_USER_SET_PROCESS_FACILITY_FAILURE;
-    try {
-        auto const factory = new ::sharemind::DataStoreFactory();
-        c->processHandle = factory;
-        if (!c->setProcessFacility(c, "DataStoreFactory", &factory->wrapper()))
-            return setProcessFailure;
-        return SHAREMIND_FACILITY_MODULE_API_0x1_OK;
-    } catch (const std::bad_alloc &) {
-        return SHAREMIND_FACILITY_MODULE_API_0x1_OUT_OF_MEMORY;
-    } catch (...) {
-        return SHAREMIND_FACILITY_MODULE_API_0x1_MODULE_ERROR;
-    }
-}
-
-SHAREMIND_FACILITY_MODULE_API_0x1_PI_SHUTDOWN(processHandle);
-SHAREMIND_FACILITY_MODULE_API_0x1_PI_SHUTDOWN(processHandle) {
-    assert(processHandle);
-    delete static_cast<::sharemind::DataStoreFactory *>(processHandle);
-}
+SHAREMIND_FACILITY_MODULE_API_MODULE_INFO("DataStoreManager", 2u, 2u);
+extern V2::FacilityModuleInfo sharemindFacilityModuleInfo_v2;
+V2::FacilityModuleInfo sharemindFacilityModuleInfo_v2{initializeModule};
 
 } // extern "C" {
