@@ -56,7 +56,6 @@ SharemindAddSharedLibrary("sharemind_facility_datastoremanager"
         ${SharemindCxxHeaders_DEFINITIONS}
         ${SharemindLibDataStoreManager_DEFINITIONS}
     LINK_LIBRARIES
-        ${LogHard_LIBRARIES}
         ${SharemindLibDataStoreManager_LIBRARIES}
 )
 
@@ -69,7 +68,6 @@ SharemindAddComponentPackage("lib"
     DEB_SECTION "libs"
     DEB_DEPENDS
         "libsharemind-datastoremanager (>= 0.1.0)"
-        "libloghard (>= 0.1.0)"
         "libstdc++6 (>= 4.8.0)"
         "libc6 (>= 2.19)"
 )
