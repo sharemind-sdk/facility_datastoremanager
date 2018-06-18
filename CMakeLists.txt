@@ -75,7 +75,7 @@ SharemindAddComponentPackage("debug"
     DESCRIPTION "Sharemind Data Store Manager facility debug symbols"
     DEB_SECTION "debug"
     DEB_DEPENDS
-        "libsharemind-facility-datastoremanager (= ${SharemindFacilityDataStoreManager_VERSION})"
+        "libsharemind-facility-datastoremanager (= ${SharemindFacilityDataStoreManager_DEB_lib_PACKAGE_VERSION})"
 )
 SharemindPackagingFinalize()
 
