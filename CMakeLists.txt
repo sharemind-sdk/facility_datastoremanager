@@ -56,6 +56,11 @@ SharemindAddSharedLibrary("sharemind_facility_datastoremanager"
         ${SharemindLibDataStoreManager_LIBRARIES}
 )
 
+# Configuration files:
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/packaging/configs/sharemind/"
+        DESTINATION "/etc/sharemind/"
+        COMPONENT "lib"
+        EXCLUDE_FROM_ALL)
 
 # Packaging:
 SharemindSetupPackaging()
@@ -67,6 +72,8 @@ SharemindAddComponentPackage("lib"
         "libsharemind-datastoremanager (>= 0.1.0)"
         "libstdc++6 (>= 4.8.0)"
         "libc6 (>= 2.19)"
+    DEB_EXTRA_CONTROL_FILES
+        "${CMAKE_CURRENT_SOURCE_DIR}/packaging/debian/conffiles"
 )
 SharemindAddComponentPackage("debug"
     NAME "libsharemind-facility-datastoremanager-dbg"
