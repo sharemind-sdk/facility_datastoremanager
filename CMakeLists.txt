@@ -23,11 +23,11 @@ PROJECT(SharemindFacilityDataStoreManager VERSION 0.2.3 LANGUAGES CXX)
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/config.local" OPTIONAL)
 INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
 
-FIND_PACKAGE(SharemindCMakeHelpers 1.4 REQUIRED)
+FIND_PACKAGE(SharemindCMakeHelpers 1.6 REQUIRED)
 
 
-FIND_PACKAGE(SharemindFacilityModuleApis 2.0.0 REQUIRED)
-FIND_PACKAGE(SharemindLibDataStoreManager 0.1.0 REQUIRED)
+FIND_PACKAGE(SharemindFacilityModuleApis 2.1.0 REQUIRED)
+FIND_PACKAGE(SharemindLibDataStoreManager 0.2.0 REQUIRED)
 
 
 # The facility:
@@ -36,25 +36,24 @@ FILE(GLOB_RECURSE SharemindFacilityDataStoreManager_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
 FILE(GLOB_RECURSE SharemindFacilityDataStoreManager_SOURCES
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-SharemindAddSharedLibrary("sharemind_facility_datastoremanager"
+SharemindAddSharedLibrary(FacilityDataStoreManager
     MODULE
     OUTPUT_NAME "sharemind_facility_datastoremanager"
     SOURCES
         ${SharemindFacilityDataStoreManager_SOURCES}
         ${SharemindFacilityDataStoreManager_HEADERS}
-    INCLUDE_DIRECTORIES
-        ${SharemindLibDataStoreManager_INCLUDE_DIRS}
-        ${SharemindFacilityModuleApis_INCLUDE_DIRS}
-    COMPILE_DEFINITIONS
+)
+TARGET_COMPILE_DEFINITIONS(FacilityDataStoreManager
+    PRIVATE
         "_XOPEN_SOURCE=700"
         "SHAREMIND_INTERNAL_"
-    LEGACY_DEFINITIONS
-        ${SharemindFacilityModuleApis_DEFINITIONS}
-        ${SharemindLibDataStoreManager_DEFINITIONS}
-    LINK_LIBRARIES
-        ${SharemindFacilityModuleApis_LIBRARIES}
-        ${SharemindLibDataStoreManager_LIBRARIES}
-)
+    )
+TARGET_LINK_LIBRARIES(FacilityDataStoreManager
+    PRIVATE
+        Sharemind::FacilityModuleApis
+        Sharemind::LibDataStoreManager
+    )
+
 
 # Configuration files:
 INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/packaging/configs/sharemind/"
@@ -69,7 +68,7 @@ SharemindAddComponentPackage("lib"
     DESCRIPTION "Sharemind Data Store Manager facility"
     DEB_SECTION "libs"
     DEB_DEPENDS
-        "libsharemind-datastoremanager (>= 0.1.0)"
+        "libsharemind-datastoremanager (>= 0.2.0)"
         "libstdc++6 (>= 4.8.0)"
         "libc6 (>= 2.19)"
     DEB_EXTRA_CONTROL_FILES
@@ -83,4 +82,3 @@ SharemindAddComponentPackage("debug"
         "libsharemind-facility-datastoremanager (= ${SharemindFacilityDataStoreManager_DEB_lib_PACKAGE_VERSION})"
 )
 SharemindPackagingFinalize()
-
