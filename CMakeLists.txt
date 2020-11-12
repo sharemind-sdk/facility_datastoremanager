@@ -31,7 +31,6 @@ FIND_PACKAGE(SharemindLibDataStoreManager 0.2.0 REQUIRED)
 
 
 # The facility:
-SharemindSetCxx14CompileOptions()
 FILE(GLOB_RECURSE SharemindFacilityDataStoreManager_HEADERS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
 FILE(GLOB_RECURSE SharemindFacilityDataStoreManager_SOURCES
