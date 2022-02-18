@@ -27,7 +27,7 @@ FIND_PACKAGE(SharemindCMakeHelpers 1.6 REQUIRED)
 
 
 FIND_PACKAGE(SharemindFacilityModuleApis 2.1.0 REQUIRED)
-FIND_PACKAGE(SharemindLibDataStoreManager 0.2.0 REQUIRED)
+FIND_PACKAGE(SharemindLibDataStoreManager 0.3.0 REQUIRED)
 
 
 # The facility:
